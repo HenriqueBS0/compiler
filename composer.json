@@ -3,7 +3,8 @@
     "description": "Project used for the development tests of a compiler",
     "type": "project",
     "require": {
-        "henriquebs0/lexical-analyzer": "^1.0"
+        "henriquebs0/lexical-analyzer": "^1.0",
+        "henriquebs0/router": "dev-main"
     },
     "license": "MIT",
     "autoload": {
