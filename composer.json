@@ -10,7 +10,10 @@
     "autoload": {
         "psr-4": {
             "HenriqueBS0\\Compiler\\": "src/"
-        }
+        },
+        "files": [
+            "src/helpers.php"
+        ]
     },
     "authors": [
         {
