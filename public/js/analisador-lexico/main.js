@@ -3,9 +3,6 @@ const onChangeEntrada = evento => {
 }
 
 const carregarTokens = async entrada => {
-
-    removerAlerta();
-
     const tbody = document.getElementById('tbody-tokens');
     
     if(entrada == '') {
@@ -17,6 +14,9 @@ const carregarTokens = async entrada => {
 
     if(resposta.erro) {
         mostrarAlerta(resposta.mensagem);
+    }
+    else {
+        removerAlerta();
     }
 
     tbody.innerHTML = '';
