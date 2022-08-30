@@ -1,0 +1,20 @@
+{
+    "name": "henriquebs0/compiler",
+    "description": "Project used for the development tests of a compiler",
+    "type": "project",
+    "require": {
+        "henriquebs0/lexical-analyzer": "^1.0"
+    },
+    "license": "MIT",
+    "autoload": {
+        "psr-4": {
+            "HenriqueBS0\\Compiler\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "HenriqueBS0",
+            "email": "henrique.10agr@gmail.com"
+        }
+    ]
+}
