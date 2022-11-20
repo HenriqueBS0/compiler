@@ -4,7 +4,8 @@
     "type": "project",
     "require": {
         "henriquebs0/lexical-analyzer": "^1.0",
-        "henriquebs0/router": "dev-main"
+        "henriquebs0/router": "dev-main",
+        "henriquebs0/syntactic-analyzer": "^1.0"
     },
     "license": "MIT",
     "autoload": {
