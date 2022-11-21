@@ -69,13 +69,21 @@ class DeclaracaoVariavel extends Node {
 
     public function semanticValidation(SemanticAnalyzer &$semanticAnalyzer): void
     {
-        $this->mySemanticValidation($semanticAnalyzer);
+        $this->validacaoSemantica($semanticAnalyzer);
     }
 
-    private function mySemanticValidation(AnalisadorSemantico &$analisadorSemantico) : void
+    private function validacaoSemantica(AnalisadorSemantico &$analisadorSemantico) : void
     {
+        $nomeVariavel = $this->getIdentificador()->getLexeme();
+
+        if($analisadorSemantico->getVariaveis()->existeVariavel($nomeVariavel)) {
+            $linha = $this->getIdentificador()->getPosition()->getStartLine();
+
+            $analisadorSemantico->newSemanticException("Erro na linha {$linha}: A variável '{$nomeVariavel}' já foi declarada.");
+        }
+
         $variavel = new Variavel();
-        $variavel->setNome($this->getIdentificador()->getLexeme());
+        $variavel->setNome($nomeVariavel);
         $variavel->setTipo($this->getTipo()->getLexeme());
 
         $analisadorSemantico->getVariaveis()->addVariavel($variavel);

@@ -14,84 +14,13 @@ require_once __DIR__ . '/vendor/autoload.php';
 $parser = new Parser();
 
 $input = "
-FUNCTION teste2() {
-    NUM  testeNUM;
-    BOOL testeBOOL;
-    STR  testeSTR;
-}
-
-FUNCTION teste3(NUM X) {
-    NUM  testeNUM;
-    BOOL testeBOOL;
-    STR  testeSTR;
-}
-
-FUNCTION teste(NUM X, BOOL Y, STR Z) {
-    NUM  testeNUM;
-    BOOL testeBOOL;
-    STR  testeSTR;
+FUNCTION teste() {
+    NUM variavel;
 }
 
 EXECUTE() {
-    NUM  testeNUM;
-    BOOL testeBOOL;
-    STR  testeSTR;
-    STR outraVariavel;
-    
-    testeFuncaoSemParametros();
-    testeFuncaoComUmParametros(x);
-    testeFuncaoComtTresParametros(x, y, f);
-
-    var = 1;
-    var = TRUE;
-    var = FALSE;
-    var = X;
-    var = 'teste';
-    var = !X;
-    var = 12 + 12;
-    var = 12 - 12;
-    var = 12 * 12;
-    var = 12 / 12;
-    var = X + Y;
-    var = X - Y;
-    var = X * Y;
-    var = X / Y;
-    var = 1 + 12 - 23 * 46 / 34;
-    var = X + Y - V * G / T;
-    var = 1 + Y - 54 * G / 34;
-    var = 'STR' . 'STR';
-    var = VAR . 'STR';
-    var = VAR . VAR;
-    var = 'STR' . X . 'STR' . Y;
-    var = 1 > 2;
-    var = X > Y;
-    var = X > 2;
-    var = 1 < 2;
-    var = X < Y;
-    var = X < 2;
-    var = 1 == 2;
-    var = X == Y;
-    var = X == 2;
-    var = 'STR' == 'STR';
-    var = 'STR' == Y;
-    var = 1 != 2;
-    var = X != Y;
-    var = X != 2;
-    var = 'STR' != 'STR';
-    var = 'STR' != Y;
-    var = X & Y;
-    var = X & Y & Z;
-    var = X | Y;
-    var = X | Y | Z;
-    PRINT(X);
-    
-    IF(X) {
-        FUNCAO(X);
-    }
-
-    WHILE(X) {
-        FUNCAO(X);
-    }
+    NUM variavel;
+    NUM variavel;
 }";
 
 $dump = null;
