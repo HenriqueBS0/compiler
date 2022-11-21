@@ -2,7 +2,10 @@
 
 namespace HenriqueBS0\Compiler\EstruturasAnalise\ElementosArvoreSintatica;
 
+use HenriqueBS0\Compiler\EstruturasAnalise\AnaliseSemantica\AnalisadorSemantico;
+use HenriqueBS0\Compiler\EstruturasAnalise\AnaliseSemantica\Variavel;
 use HenriqueBS0\LexicalAnalyzer\Token;
+use HenriqueBS0\SyntacticAnalyzer\SLR\Semantic\SemanticAnalyzer;
 use HenriqueBS0\SyntacticAnalyzer\SLR\Tree\Node;
 
 class DeclaracaoVariavel extends Node {
@@ -62,5 +65,19 @@ class DeclaracaoVariavel extends Node {
         $this->pontoVirgula = $pontoVirgula;
 
         return $this;
+    }
+
+    public function semanticValidation(SemanticAnalyzer &$semanticAnalyzer): void
+    {
+        $this->mySemanticValidation($semanticAnalyzer);
+    }
+
+    private function mySemanticValidation(AnalisadorSemantico &$analisadorSemantico) : void
+    {
+        $variavel = new Variavel();
+        $variavel->setNome($this->getIdentificador()->getLexeme());
+        $variavel->setTipo($this->getTipo()->getLexeme());
+
+        $analisadorSemantico->getVariaveis()->addVariavel($variavel);
     }
 }

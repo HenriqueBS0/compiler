@@ -14,13 +14,13 @@ require_once __DIR__ . '/vendor/autoload.php';
 $parser = new Parser();
 
 $input = "
-FUNCTION teste() {
+FUNCTION teste2() {
     NUM  testeNUM;
     BOOL testeBOOL;
     STR  testeSTR;
 }
 
-FUNCTION teste(NUM X) {
+FUNCTION teste3(NUM X) {
     NUM  testeNUM;
     BOOL testeBOOL;
     STR  testeSTR;
@@ -36,6 +36,7 @@ EXECUTE() {
     NUM  testeNUM;
     BOOL testeBOOL;
     STR  testeSTR;
+    STR outraVariavel;
     
     testeFuncaoSemParametros();
     testeFuncaoComUmParametros(x);

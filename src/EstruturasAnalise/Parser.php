@@ -3,6 +3,7 @@
 namespace HenriqueBS0\Compiler\EstruturasAnalise;
 
 use Closure;
+use HenriqueBS0\Compiler\EstruturasAnalise\AnaliseSemantica\AnalisadorSemantico;
 use HenriqueBS0\LexicalAnalyzer\LexicalAnalyzer;
 use HenriqueBS0\LexicalAnalyzer\TokenStack;
 use HenriqueBS0\SyntacticAnalyzer\Parsers\ParserSLR;
@@ -12,6 +13,7 @@ class Parser extends ParserSLR {
         parent::__construct(new LexicalAnalyzer(Automato::get()), Gramatica::get());
         $this->setPrepareTokenStack(self::getFuncaoTratarPilhaTokens());
         $this->setOnReduceTable(TabelaReducoes::get());
+        $this->setSemanticAnalyzer(new AnalisadorSemantico());
     }
 
     private static function getFuncaoTratarPilhaTokens() : Closure

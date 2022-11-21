@@ -2,14 +2,17 @@
 
 namespace HenriqueBS0\Compiler\EstruturasAnalise\ElementosArvoreSintatica;
 
+use HenriqueBS0\Compiler\EstruturasAnalise\AnaliseSemantica\AnalisadorSemantico;
+use HenriqueBS0\Compiler\EstruturasAnalise\AnaliseSemantica\Funcao;
 use HenriqueBS0\LexicalAnalyzer\Token;
+use HenriqueBS0\SyntacticAnalyzer\SLR\Semantic\SemanticAnalyzer;
 use HenriqueBS0\SyntacticAnalyzer\SLR\Tree\Node;
 
 class DefinicaoFuncao extends Node {
     private Token $function;
     private Token $identificador;
     private Token $abreParenteses;
-    private DefinicaoParametrosFuncao $definicaoParametrosFuncao;
+    private ?DefinicaoParametrosFuncao $definicaoParametrosFuncao = null;
     private Token $fechaParenteses;
     private BlocoCodigo $blocoCodigo;
 
@@ -72,7 +75,7 @@ class DefinicaoFuncao extends Node {
     /**
      * Get the value of definicaoParametrosFuncao
      */
-    public function getDefinicaoParametrosFuncao(): DefinicaoParametrosFuncao
+    public function getDefinicaoParametrosFuncao(): ?DefinicaoParametrosFuncao
     {
         return $this->definicaoParametrosFuncao;
     }
@@ -121,5 +124,44 @@ class DefinicaoFuncao extends Node {
         $this->blocoCodigo = $blocoCodigo;
 
         return $this;
+    }
+
+    public function semanticValidation(SemanticAnalyzer &$semanticAnalyzer): void
+    {
+        $this->validacaoSemantica($semanticAnalyzer);
+    }
+
+    public function validacaoSemantica(AnalisadorSemantico &$analisadorSemantico) : void
+    {
+        $this->adicionarFuncao($analisadorSemantico);
+        $this->removerParametrosListaVariaveis($analisadorSemantico);
+    }
+
+    public function adicionarFuncao(AnalisadorSemantico &$analisadorSemantico) : void
+    {
+        $funcao = new Funcao(); 
+        $funcao->setNome($this->getIdentificador()->getLexeme());
+
+        if(!is_null($this->getDefinicaoParametrosFuncao())) {
+            
+            /** @var DefinicaoParametroFuncao */
+            foreach (array_reverse($this->getDefinicaoParametrosFuncao()->getDefinicaoParametrosFuncao()) as $definicaoParametroFuncao) {
+                $funcao->addTipoParametros($definicaoParametroFuncao->getTipo()->getLexeme());
+            }
+        }
+
+        $analisadorSemantico->getFuncoes()->addFuncao($funcao);
+    }
+
+    public function removerParametrosListaVariaveis(AnalisadorSemantico &$analisadorSemantico): void
+    {
+        if(is_null($this->getDefinicaoParametrosFuncao())) {
+            return;
+        }
+
+        /** @var DefinicaoParametroFuncao */
+        foreach ($this->getDefinicaoParametrosFuncao()->getDefinicaoParametrosFuncao() as $definicaoParametroFuncao) {
+            $analisadorSemantico->getVariaveis()->removerVariavel($definicaoParametroFuncao->getIdentificador()->getLexeme());
+        }
     }
 }

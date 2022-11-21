@@ -24,13 +24,6 @@ class Atribuicao extends Node
     private OperacaoLogicaOr $operacaoLogicaOr;
     private Token $pontoVirgula;
 
-    
-
-    public function semanticValidation(SemanticAnalyzer $semanticAnalyzer): void
-    {
-        $semanticAnalyzer->newSemanticException("Deu ruim beer");
-    }
-
     /**
      * Get the value of identificador
      */

@@ -2,15 +2,15 @@
 
 namespace HenriqueBS0\Compiler\EstruturasAnalise\ElementosArvoreSintatica;
 
+use HenriqueBS0\Compiler\EstruturasAnalise\AnaliseSemantica\AnalisadorSemantico;
 use HenriqueBS0\LexicalAnalyzer\Token;
+use HenriqueBS0\SyntacticAnalyzer\SLR\Semantic\SemanticAnalyzer;
 use HenriqueBS0\SyntacticAnalyzer\SLR\Tree\Node;
 
 class BlocoCodigo extends Node {
     private Token $abreChaves;
     private ListaComandos $listaComandos;
     private Token $fechaChaves;
-
-    
 
     /**
      * Get the value of abreChaves
@@ -64,5 +64,22 @@ class BlocoCodigo extends Node {
         $this->fechaChaves = $fechaChaves;
 
         return $this;
+    }
+
+    public function semanticValidation(SemanticAnalyzer &$semanticAnalyzer): void
+    {
+        $this->validacaoSemantica($semanticAnalyzer);
+    }
+
+    public function validacaoSemantica(AnalisadorSemantico &$analisadorSemantico): void
+    {
+        /** @var Comando */
+        foreach ($this->getListaComandos()->getListaComandos() as $comando) {
+            if(!is_null($comando->getDeclaracaoVariavel())) {
+                $nomeVariavelDeclarada = $comando->getDeclaracaoVariavel()->getIdentificador()->getLexeme();
+
+                $analisadorSemantico->getVariaveis()->removerVariavel($nomeVariavelDeclarada);
+            }
+        }
     }
 }

@@ -22,5 +22,5 @@ class ListaComandos extends Node {
         foreach ($listaComandos->getListaComandos() as $comando) {
             $this->addComando($comando);
         }
-    } 
+    }
 }

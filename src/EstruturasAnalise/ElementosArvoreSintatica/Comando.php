@@ -5,7 +5,7 @@ namespace HenriqueBS0\Compiler\EstruturasAnalise\ElementosArvoreSintatica;
 use HenriqueBS0\SyntacticAnalyzer\SLR\Tree\Node;
 
 class Comando extends Node {
-    private DeclaracaoVariavel $declaracaoVariavel;
+    private ?DeclaracaoVariavel $declaracaoVariavel = null;
     private ChamadaFuncao $chamadaFuncao;
     private Atribuicao $atribuicao;
     private Printa $printa;
@@ -17,7 +17,7 @@ class Comando extends Node {
     /**
      * Get the value of declaracaoVariavel
      */
-    public function getDeclaracaoVariavel(): DeclaracaoVariavel
+    public function getDeclaracaoVariavel(): ?DeclaracaoVariavel
     {
         return $this->declaracaoVariavel;
     }
