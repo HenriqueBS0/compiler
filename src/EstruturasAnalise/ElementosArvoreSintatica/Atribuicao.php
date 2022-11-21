@@ -112,7 +112,7 @@ class Atribuicao extends Node
     /**
      * Get the value of cadeia
      */
-    public function getCadeia(): Token
+    public function getCadeia(): ?Token
     {
         return $this->cadeia;
     }
@@ -296,10 +296,15 @@ class Atribuicao extends Node
 
     private function validacaoSemantica(AnalisadorSemantico &$analisadorSemantico) : void
     {
-        $this->variavelDeclarada($analisadorSemantico);
+        $this->verificarVariavelDeclarada($analisadorSemantico);
+        $this->vericarVariavelValor($analisadorSemantico);
+        $this->validarOperacaoLogicaNot($analisadorSemantico);
+        $this->verificacaoTipo($analisadorSemantico);
+
+        $analisadorSemantico->getVariaveis()->getVariavel($this->getIdentificador()->getLexeme())->setIniciada();
     }
 
-    private function variavelDeclarada(AnalisadorSemantico $analisadorSemantico) : void 
+    private function verificarVariavelDeclarada(AnalisadorSemantico $analisadorSemantico) : void 
     {
         $nomeVariavel = $this->getIdentificador()->getLexeme();
 
@@ -311,4 +316,110 @@ class Atribuicao extends Node
 
         $analisadorSemantico->newSemanticException("Erro na linha {$linha}: A variável '{$nomeVariavel}' não foi declarada.");
     }
+
+    private function vericarVariavelValor(AnalisadorSemantico $analisadorSemantico) : void
+    {
+        if(is_null($this->getIdentificadorValor())) {
+            return;
+        }
+
+        $nomeVariavel = $this->getIdentificadorValor()->getLexeme();
+
+        $declarada = $analisadorSemantico->getVariaveis()->existeVariavel($nomeVariavel);
+
+        $linha = $this->getIdentificador()->getPosition()->getStartLine();
+
+        if(!$declarada) {            
+            $analisadorSemantico->newSemanticException("Erro na linha {$linha}: A variável '{$nomeVariavel}' não foi declarada.");
+        }
+
+        $iniciada = $analisadorSemantico->getVariaveis()->getVariavel($nomeVariavel)->iniciada();
+
+        if(!$iniciada) {            
+            $analisadorSemantico->newSemanticException("Erro na linha {$linha}: A variável '{$nomeVariavel}' não foi iniciada.");
+        }
+        
+    }
+
+    private function validarOperacaoLogicaNot(AnalisadorSemantico $analisadorSemantico) : void
+    {
+        if(is_null($this->getNot())) {
+            return;
+        }
+
+        $nomeVariavel = $this->getIdentificadorValor()->getLexeme();
+        $tipo = $analisadorSemantico->getVariaveis()->getVariavel($nomeVariavel)->getTipo();
+
+        if($tipo !== 'BOOL') {
+            $linha = $this->getIdentificadorValor()->getPosition()->getStartLine();
+            $analisadorSemantico->newSemanticException("Erro na linha {$linha}: A variável '{$nomeVariavel}' não é do tipo 'BOOL'.");
+        }
+    }
+
+    private function verificacaoTipo(AnalisadorSemantico $analisadorSemantico) : void
+    {
+        $nomeVariavel = $this->getIdentificador()->getLexeme();
+        
+        $tipoEsperado = $analisadorSemantico->getVariaveis()->getVariavel($nomeVariavel)->getTipo();
+
+        $tipoAtribuido = $this->getTipoAtribuido($analisadorSemantico);
+
+        if($tipoEsperado !== $tipoAtribuido) {
+            $linha = $this->getIdentificador()->getPosition()->getStartLine();
+            $analisadorSemantico->newSemanticException("Erro na linha {$linha}: A variável '{$nomeVariavel}' é do tipo '{$tipoEsperado}' e está recebendo um valor do tipo '{$tipoAtribuido}'.");
+        }
+
+    }
+
+    private function getTipoAtribuido(AnalisadorSemantico $analisadorSemantico) : string
+    {
+        if(!is_null($this->getConstante())) {
+            return 'NUM';
+        }
+
+        if(!is_null($this->getNot())) {
+            return 'BOOL';
+        }
+    
+        if(!is_null($this->getCadeia())) {
+            return 'STR';
+        }
+
+        if(!is_null($this->getFalse())) {
+            return 'BOOL';
+        }
+
+        if(!is_null($this->getTrue())) {
+            return 'BOOL';
+        }
+
+        if(!is_null($this->getOperacaoAritimetica())) {
+            return 'NUM';
+        }
+
+        if(!is_null($this->getConcatenacao())) {
+            return 'STR';
+        }
+
+        if(!is_null($this->getComparacaoQuantitativa())) {
+            return 'BOOL';
+        }
+
+        if(!is_null($this->getComparacaoIgualdade())) {
+            return 'BOOL';
+        }
+
+        if(!is_null($this->getOperacaoLogicaAnd())) {
+            return 'BOOL';
+        }
+
+        if(!is_null($this->getOperacaoLogicaOr())) {
+            return 'BOOL';
+        }
+
+        if(!is_null($this->getIdentificadorValor())) {
+            return $analisadorSemantico->getVariaveis()->getVariavel($this->getIdentificadorValor()->getLexeme())->getTipo();
+        }
+    }
 }
+

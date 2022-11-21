@@ -14,13 +14,13 @@ require_once __DIR__ . '/vendor/autoload.php';
 $parser = new Parser();
 
 $input = "
-FUNCTION teste() {
-    NUM variavel;
-    variavell = 1;
-}
-
 EXECUTE() {
-    NUM variavel;
+    STR r;
+    STR X;
+
+    X = 'teste';
+
+    r = F . 'teste' . X;
 }";
 
 $dump = null;

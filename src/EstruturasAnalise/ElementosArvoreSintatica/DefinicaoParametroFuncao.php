@@ -58,6 +58,7 @@ class DefinicaoParametroFuncao extends Node {
         $variavel = new Variavel();
         $variavel->setNome($this->getIdentificador()->getLexeme());
         $variavel->setTipo($this->getTipo()->getLexeme());
+        $variavel->setIniciada();
 
         $analisadorSemantico->getVariaveis()->addVariavel($variavel);
     }
