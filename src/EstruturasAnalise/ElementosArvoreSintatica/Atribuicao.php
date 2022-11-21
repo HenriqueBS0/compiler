@@ -2,6 +2,7 @@
 
 namespace HenriqueBS0\Compiler\EstruturasAnalise\ElementosArvoreSintatica;
 
+use HenriqueBS0\Compiler\EstruturasAnalise\AnaliseSemantica\AnalisadorSemantico;
 use HenriqueBS0\LexicalAnalyzer\Token;
 use HenriqueBS0\SyntacticAnalyzer\SLR\Semantic\SemanticAnalyzer;
 use HenriqueBS0\SyntacticAnalyzer\SLR\Tree\Node;
@@ -10,18 +11,18 @@ class Atribuicao extends Node
 {
     private ?Token $identificador = null;
     private Token $recebe;
-    private Token $constante;
-    private Token $not;
-    private Token $identificadorValor;
-    private Token $cadeia;
-    private Token $true;
-    private Token $false;
-    private OperacaoAritimetica $operacaoAritimetica;
-    private Concatenacao $concatenacao;
-    private ComparacaoQuantitativa $comparacaoQuantitativa;
-    private ComparacaoIgualdade $comparacaoIgualdade;
-    private OperacaoLogicaAnd $operacaoLogicaAnd;
-    private OperacaoLogicaOr $operacaoLogicaOr;
+    private ?Token $constante = null;
+    private ?Token $not = null;
+    private ?Token $identificadorValor = null;
+    private ?Token $cadeia = null;
+    private ?Token $true = null;
+    private ?Token $false = null;
+    private ?OperacaoAritimetica $operacaoAritimetica = null;
+    private ?Concatenacao $concatenacao = null;
+    private ?ComparacaoQuantitativa $comparacaoQuantitativa = null;
+    private ?ComparacaoIgualdade $comparacaoIgualdade = null;
+    private ?OperacaoLogicaAnd $operacaoLogicaAnd = null;
+    private ?OperacaoLogicaOr $operacaoLogicaOr = null;
     private Token $pontoVirgula;
 
     /**
@@ -67,7 +68,7 @@ class Atribuicao extends Node
     /**
      * Get the value of constante
      */
-    public function getConstante(): Token
+    public function getConstante(): ?Token
     {
         return $this->constante;
     }
@@ -85,7 +86,7 @@ class Atribuicao extends Node
     /**
      * Get the value of not
      */
-    public function getNot(): Token
+    public function getNot(): ?Token
     {
         return $this->not;
     }
@@ -103,7 +104,7 @@ class Atribuicao extends Node
     /**
      * Get the value of identificadorValor
      */
-    public function getIdentificadorValor(): Token
+    public function getIdentificadorValor(): ?Token
     {
         return $this->identificadorValor;
     }
@@ -129,7 +130,7 @@ class Atribuicao extends Node
     /**
      * Get the value of true
      */
-    public function getTrue(): Token
+    public function getTrue(): ?Token
     {
         return $this->true;
     }
@@ -147,7 +148,7 @@ class Atribuicao extends Node
     /**
      * Get the value of false
      */
-    public function getFalse(): Token
+    public function getFalse(): ?Token
     {
         return $this->false;
     }
@@ -165,7 +166,7 @@ class Atribuicao extends Node
     /**
      * Get the value of operacaoAritimetica
      */
-    public function getOperacaoAritimetica(): OperacaoAritimetica
+    public function getOperacaoAritimetica(): ?OperacaoAritimetica
     {
         return $this->operacaoAritimetica;
     }
@@ -183,7 +184,7 @@ class Atribuicao extends Node
     /**
      * Get the value of concatenacao
      */
-    public function getConcatenacao(): Concatenacao
+    public function getConcatenacao(): ?Concatenacao
     {
         return $this->concatenacao;
     }
@@ -201,7 +202,7 @@ class Atribuicao extends Node
     /**
      * Get the value of comparacaoQuantitativa
      */
-    public function getComparacaoQuantitativa(): ComparacaoQuantitativa
+    public function getComparacaoQuantitativa(): ?ComparacaoQuantitativa
     {
         return $this->comparacaoQuantitativa;
     }
@@ -219,7 +220,7 @@ class Atribuicao extends Node
     /**
      * Get the value of comparacaoIgualdade
      */
-    public function getComparacaoIgualdade(): ComparacaoIgualdade
+    public function getComparacaoIgualdade(): ?ComparacaoIgualdade
     {
         return $this->comparacaoIgualdade;
     }
@@ -237,7 +238,7 @@ class Atribuicao extends Node
     /**
      * Get the value of operacaoLogicaAnd
      */
-    public function getOperacaoLogicaAnd(): OperacaoLogicaAnd
+    public function getOperacaoLogicaAnd(): ?OperacaoLogicaAnd
     {
         return $this->operacaoLogicaAnd;
     }
@@ -255,7 +256,7 @@ class Atribuicao extends Node
     /**
      * Get the value of operacaoLogicaOr
      */
-    public function getOperacaoLogicaOr(): OperacaoLogicaOr
+    public function getOperacaoLogicaOr(): ?OperacaoLogicaOr
     {
         return $this->operacaoLogicaOr;
     }
@@ -286,5 +287,28 @@ class Atribuicao extends Node
         $this->pontoVirgula = $pontoVirgula;
 
         return $this;
+    }
+
+    public function semanticValidation(SemanticAnalyzer &$semanticAnalyzer): void
+    {
+        $this->validacaoSemantica($semanticAnalyzer);
+    }
+
+    private function validacaoSemantica(AnalisadorSemantico &$analisadorSemantico) : void
+    {
+        $this->variavelDeclarada($analisadorSemantico);
+    }
+
+    private function variavelDeclarada(AnalisadorSemantico $analisadorSemantico) : void 
+    {
+        $nomeVariavel = $this->getIdentificador()->getLexeme();
+
+        if($analisadorSemantico->getVariaveis()->existeVariavel($nomeVariavel)) {
+            return;
+        }
+
+        $linha = $this->getIdentificador()->getPosition()->getStartLine();
+
+        $analisadorSemantico->newSemanticException("Erro na linha {$linha}: A variável '{$nomeVariavel}' não foi declarada.");
     }
 }

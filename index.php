@@ -16,10 +16,10 @@ $parser = new Parser();
 $input = "
 FUNCTION teste() {
     NUM variavel;
+    variavell = 1;
 }
 
 EXECUTE() {
-    NUM variavel;
     NUM variavel;
 }";
 
