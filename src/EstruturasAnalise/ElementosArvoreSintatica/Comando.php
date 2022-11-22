@@ -12,8 +12,6 @@ class Comando extends Node {
     private Se $se;
     private Enquanto $enquanto;
 
-    
-
     /**
      * Get the value of declaracaoVariavel
      */

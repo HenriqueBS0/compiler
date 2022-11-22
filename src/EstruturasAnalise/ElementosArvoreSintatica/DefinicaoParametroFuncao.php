@@ -60,6 +60,10 @@ class DefinicaoParametroFuncao extends Node {
         $variavel->setTipo($this->getTipo()->getLexeme());
         $variavel->setIniciada();
 
+        if($analisadorSemantico->getVariaveis()->existeVariavel($this->getIdentificador()->getLexeme())) {
+            $analisadorSemantico->newSemanticException("Erro na linha {$this->getIdentificador()->getPosition()->getStartLine()}: Definição de parâmetros com o mesmo nome.");
+        }
+
         $analisadorSemantico->getVariaveis()->addVariavel($variavel);
     }
 }

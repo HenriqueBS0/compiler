@@ -5,8 +5,11 @@ namespace HenriqueBS0\Compiler\EstruturasAnalise;
 use Closure;
 use HenriqueBS0\Compiler\EstruturasAnalise\AnaliseSemantica\AnalisadorSemantico;
 use HenriqueBS0\LexicalAnalyzer\LexicalAnalyzer;
+use HenriqueBS0\LexicalAnalyzer\LexicalAnalyzerException;
 use HenriqueBS0\LexicalAnalyzer\TokenStack;
 use HenriqueBS0\SyntacticAnalyzer\Parsers\ParserSLR;
+use HenriqueBS0\SyntacticAnalyzer\Parsers\SyntacticException;
+use HenriqueBS0\SyntacticAnalyzer\SLR\Semantic\SemanticAnalyzerException;
 
 class Parser extends ParserSLR {
     public function __construct() {
@@ -31,5 +34,26 @@ class Parser extends ParserSLR {
         
             return $pilhaTratada->reverseOrdering();
         };
+    }
+
+    /**
+     * @param string $input
+     * @throws ParserException
+     * @return mixed
+     */
+    public function getParseTree(string $input): mixed
+    {
+        try {
+            return parent::getParseTree($input);
+        } 
+        catch (LexicalAnalyzerException $ex) {
+            throw ParserException::getExcecaoLexica($ex);
+        }
+        catch (SyntacticException $ex) {
+            throw ParserException::getExcecaoSintatica($ex);
+        }
+        catch (SemanticAnalyzerException $ex) {
+            throw ParserException::getExcecaoSemantica($ex);
+        } 
     }
 }

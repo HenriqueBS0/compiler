@@ -78,6 +78,11 @@ class BlocoCodigo extends Node {
             if(!is_null($comando->getDeclaracaoVariavel())) {
                 $nomeVariavelDeclarada = $comando->getDeclaracaoVariavel()->getIdentificador()->getLexeme();
 
+                if(!$analisadorSemantico->getVariaveis()->getVariavel($nomeVariavelDeclarada)->iniciada()) {
+                    $linha =  $comando->getDeclaracaoVariavel()->getIdentificador()->getPosition()->getStartLine();
+                    $analisadorSemantico->newSemanticException("Erro na linha {$linha}: Variável '{$nomeVariavelDeclarada}' não utilizada.");
+                }
+
                 $analisadorSemantico->getVariaveis()->removerVariavel($nomeVariavelDeclarada);
             }
         }

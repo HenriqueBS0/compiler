@@ -2,7 +2,9 @@
 
 namespace HenriqueBS0\Compiler\EstruturasAnalise\ElementosArvoreSintatica;
 
+use HenriqueBS0\Compiler\EstruturasAnalise\AnaliseSemantica\AnalisadorSemantico;
 use HenriqueBS0\LexicalAnalyzer\Token;
+use HenriqueBS0\SyntacticAnalyzer\SLR\Semantic\SemanticAnalyzer;
 use HenriqueBS0\SyntacticAnalyzer\SLR\Tree\Node;
 
 class Se extends Node {
@@ -100,5 +102,47 @@ class Se extends Node {
         $this->blocoCodigo = $blocoCodigo;
 
         return $this;
+    }
+
+    public function semanticValidation(SemanticAnalyzer &$semanticAnalyzer) : void
+    {
+        $this->validacaoSemantica($semanticAnalyzer);
+    }
+
+    private function validacaoSemantica(AnalisadorSemantico $analisadorSemantico) : void 
+    {
+        $this->verificarVariavelDeclarada($analisadorSemantico);
+        $this->verificarVariavelIniciada($analisadorSemantico);
+        $this->verificarVariavelBoleana($analisadorSemantico);
+    }
+
+    private function verificarVariavelDeclarada(AnalisadorSemantico $analisadorSemantico) : void
+    {
+        $nomeVariavel = $this->getIdentificador()->getLexeme();
+        
+        if(!$analisadorSemantico->getVariaveis()->existeVariavel($nomeVariavel)) {
+            $linha = $this->getIdentificador()->getPosition()->getStartLine();
+            $analisadorSemantico->newSemanticException("Erro na linha {$linha}: A variável '{$nomeVariavel}' não foi declarada.");
+        }
+    }
+
+    private function verificarVariavelIniciada(AnalisadorSemantico $analisadorSemantico) : void
+    {
+        $nomeVariavel = $this->getIdentificador()->getLexeme();
+        
+        if(!$analisadorSemantico->getVariaveis()->getVariavel($nomeVariavel)->iniciada()) {
+            $linha = $this->getIdentificador()->getPosition()->getStartLine();
+            $analisadorSemantico->newSemanticException("Erro na linha {$linha}: A variável '{$nomeVariavel}' não foi iniciada.");
+        }
+    }
+
+    private function verificarVariavelBoleana(AnalisadorSemantico $analisadorSemantico) : void
+    {
+        $nomeVariavel = $this->getIdentificador()->getLexeme();
+        
+        if($analisadorSemantico->getVariaveis()->getVariavel($nomeVariavel)->getTipo() !== 'BOOL') {
+            $linha = $this->getIdentificador()->getPosition()->getStartLine();
+            $analisadorSemantico->newSemanticException("Erro na linha {$linha}: A variável '{$nomeVariavel}' não é do tipo 'BOOL'.");
+        }
     }
 }

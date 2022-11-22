@@ -160,8 +160,9 @@ class DefinicaoFuncao extends Node {
         }
 
         /** @var DefinicaoParametroFuncao */
-        foreach ($this->getDefinicaoParametrosFuncao()->getDefinicaoParametrosFuncao() as $definicaoParametroFuncao) {
-            $analisadorSemantico->getVariaveis()->removerVariavel($definicaoParametroFuncao->getIdentificador()->getLexeme());
+        foreach (array_reverse($this->getDefinicaoParametrosFuncao()->getDefinicaoParametrosFuncao()) as $definicaoParametroFuncao) {
+            $nomeParametro = $definicaoParametroFuncao->getIdentificador()->getLexeme();
+            $analisadorSemantico->getVariaveis()->removerVariavel($nomeParametro);
         }
     }
 }

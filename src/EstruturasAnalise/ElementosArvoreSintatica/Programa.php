@@ -44,9 +44,4 @@ class Programa extends Node {
 
         return $this;
     }
-
-    public function semanticValidation(SemanticAnalyzer &$semanticAnalyzer): void
-    {
-        var_dump($semanticAnalyzer);
-    }
 }
