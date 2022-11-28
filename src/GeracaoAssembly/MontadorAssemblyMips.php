@@ -12,8 +12,16 @@ class MontadorAssemblyMips {
     public static function getAssembly(Programa $programa) : string 
     {
         $controlador = self::getControladorFuncoes($programa);
-        var_dump($controlador);
-        return "";
+        $controlador->setFuncao('EXECUTE');
+
+        $comandos = array_merge_recursive(
+            ['.data'],
+            MontadorDeclaracaoVariaveis::getComandos($controlador),
+            //['.text'],
+            //MontadorComandos::getComandos($programa, $controlador, $programa->getExecucao()->getBlocoCodigo()->getListaComandos())
+        );
+
+        return implode(PHP_EOL . '     ', $comandos);
     }
 
     private static function getControladorFuncoes(Programa $programa) : ControladorFuncoes 

@@ -6,9 +6,11 @@ class ControladorFuncoes {
 
     private string $funcaoAtual = "";
 
-    private int $indiceNumeros = 0;
-    private int $indiceCadeias = 0;
+    private int $indiceNumeros  = 0;
+    private int $indiceCadeias  = 0;
     private int $indiceBoleanos = 0;
+    private int $contadorIF     = 0;
+    private int $contadorWhile  = 0;
 
     private array $funcoes = [];
 
@@ -30,6 +32,55 @@ class ControladorFuncoes {
         return $this->funcoes[$this->funcaoAtual];
     }
 
+    public function getVariaveis() : array
+    {
+        $variaveis = [];
+
+        /** @var Funcao */
+        foreach ($this->funcoes as $funcao) {
+
+            /** @var Variavel */
+            foreach ($funcao->getVariaveis() as $variavel) {
+                $variaveis[] = $variavel;
+            }
+        }
+
+        return $variaveis;
+    }
+
+    public function getVariaveisNumericas() : array 
+    {
+        return self::getVariaveisPeloTipo($this->getVariaveis(), 'NUM');
+    }
+
+    public function getVariaveisBoleanas() : array 
+    {
+        return self::getVariaveisPeloTipo($this->getVariaveis(), 'BOOL');
+    }
+
+    public function getVariaveisCadeia() : array 
+    {
+        return self::getVariaveisPeloTipo($this->getVariaveis(), 'STR');
+    }
+
+    private static function getVariaveisPeloTipo(array $variaveis, string $tipo) : array
+    {
+        $variaveisTipo = [];
+
+        /** @var Variavel */
+        foreach ($variaveis as $variavel) {
+            if($variavel->getTipo() === $tipo) {
+                $variaveisTipo[] = $variavel;
+            }
+        }
+
+        uasort($variaveisTipo, function(Variavel $a, Variavel $b) {
+            return $a->getIndice() > $b->getIndice();
+        });
+
+        return $variaveisTipo;
+    }
+
     public function addVariavel(Variavel $variavel) : self
     {
         $variavel->setIndice($this->getIndiceVariavel($variavel));
@@ -42,6 +93,20 @@ class ControladorFuncoes {
     public function getVariavel(string $nome) : Variavel
     {
         return $this->getFuncao()->getVariavel($nome);
+    }
+
+    public function getContadorIF() : int
+    {
+        $contador = $this->contadorIF;
+        $this->contadorIF++;
+        return $contador;
+    }
+
+    public function getContadorWhile() : int
+    {
+        $contador = $this->contadorWhile;
+        $this->contadorWhile++;
+        return $contador;
     }
 
     private function getIndiceVariavel(Variavel $variavel) : int

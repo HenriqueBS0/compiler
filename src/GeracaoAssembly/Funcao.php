@@ -18,6 +18,11 @@ class Funcao {
         return $this->variaveis[$nome];
     }
 
+    public function getVariaveis() : array
+    {
+        return $this->variaveis;
+    }
+
     /**
      * Get the value of nome
      */
