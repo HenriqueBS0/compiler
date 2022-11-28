@@ -6,13 +6,13 @@ use HenriqueBS0\SyntacticAnalyzer\SLR\Semantic\SemanticAnalyzer;
 use HenriqueBS0\SyntacticAnalyzer\SLR\Tree\Node;
 
 class Programa extends Node {
-    private DefinicaoFuncoes $definicaoFuncoes;
+    private ?DefinicaoFuncoes $definicaoFuncoes = null;
     private Execucao $execucao;
 
     /**
      * Get the value of definicaoFuncoes
      */
-    public function getDefinicaoFuncoes(): DefinicaoFuncoes
+    public function getDefinicaoFuncoes(): ?DefinicaoFuncoes
     {
         return $this->definicaoFuncoes;
     }

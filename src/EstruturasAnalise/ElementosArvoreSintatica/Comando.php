@@ -6,11 +6,11 @@ use HenriqueBS0\SyntacticAnalyzer\SLR\Tree\Node;
 
 class Comando extends Node {
     private ?DeclaracaoVariavel $declaracaoVariavel = null;
-    private ChamadaFuncao $chamadaFuncao;
-    private Atribuicao $atribuicao;
-    private Printa $printa;
-    private Se $se;
-    private Enquanto $enquanto;
+    private ?ChamadaFuncao $chamadaFuncao = null;
+    private ?Atribuicao $atribuicao = null;
+    private ?Printa $printa = null;
+    private ?Se $se = null;
+    private ?Enquanto $enquanto = null;
 
     /**
      * Get the value of declaracaoVariavel
@@ -33,7 +33,7 @@ class Comando extends Node {
     /**
      * Get the value of chamadaFuncao
      */
-    public function getChamadaFuncao(): ChamadaFuncao
+    public function getChamadaFuncao(): ?ChamadaFuncao
     {
         return $this->chamadaFuncao;
     }
@@ -51,7 +51,7 @@ class Comando extends Node {
     /**
      * Get the value of atribuicao
      */
-    public function getAtribuicao(): Atribuicao
+    public function getAtribuicao(): ?Atribuicao
     {
         return $this->atribuicao;
     }
@@ -69,7 +69,7 @@ class Comando extends Node {
     /**
      * Get the value of printa
      */
-    public function getPrinta(): Printa
+    public function getPrinta(): ?Printa
     {
         return $this->printa;
     }
@@ -87,7 +87,7 @@ class Comando extends Node {
     /**
      * Get the value of se
      */
-    public function getSe(): Se
+    public function getSe(): ?Se
     {
         return $this->se;
     }
@@ -105,7 +105,7 @@ class Comando extends Node {
     /**
      * Get the value of enquanto
      */
-    public function getEnquanto(): Enquanto
+    public function getEnquanto(): ?Enquanto
     {
         return $this->enquanto;
     }
