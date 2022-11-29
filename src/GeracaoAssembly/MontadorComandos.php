@@ -7,14 +7,14 @@ use HenriqueBS0\Compiler\EstruturasAnalise\ElementosArvoreSintatica\ListaComando
 use HenriqueBS0\Compiler\EstruturasAnalise\ElementosArvoreSintatica\Programa;
 
 class MontadorComandos {
-    public static function getComandos(Programa $programa, ControladorFuncoes $controladorFuncoes, ListaComandos $listaComandos) : array
+    public static function getComandos(ControladorFuncoes $controladorFuncoes, ListaComandos $listaComandos) : array
     {
         $comandos = [];
 
         /** @var Comando */
         foreach (array_reverse($listaComandos->getListaComandos()) as $comando) {
             if(!is_null($comando->getAtribuicao())) {
-                $comando = MontadorAtribuicao::getComandos($comando->getAtribuicao(), $controladorFuncoes);
+                $comandos = array_merge($comandos, MontadorAtribuicao::getComandos($comando->getAtribuicao(), $controladorFuncoes));
                 continue;
             }
         }

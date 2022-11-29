@@ -36,51 +36,62 @@ class MontadorAtribuicao {
     private static function getComandosAtribuicaoConstante(Atribuicao $atribuicao, ControladorFuncoes $controladorFuncoes) : array
     {
 
+        $variavel = $controladorFuncoes->getVariavel($atribuicao->getIdentificador()->getLexeme());
+
+        return array_merge(
+            ["li \$t1, {$atribuicao->getConstante()->getLexeme()}"],
+            UtilsMontador::salvaValorArray($variavel->getArrayVariavel(), $variavel->getIndiceCalculado())
+        );
     }
 
     private static function getComandosAtribuicaoNot(Atribuicao $atribuicao, ControladorFuncoes $controladorFuncoes) : array
     {
-        
+        return [];
     }
 
     private static function getComandosAtribuicaoVariavel(Atribuicao $atribuicao, ControladorFuncoes $controladorFuncoes) : array
     {
-        
+        $variavelAtribuida = $controladorFuncoes->getVariavel($atribuicao->getIdentificador()->getLexeme());
+        $variavelAtribuir = $controladorFuncoes->getVariavel($atribuicao->getIdentificadorValor()->getLexeme());
+
+        return array_merge(
+            UtilsMontador::carregaValorRegistrador($variavelAtribuir->getArrayVariavel(), $variavelAtribuir->getIndiceCalculado()),
+            UtilsMontador::salvaValorArray($variavelAtribuida->getArrayVariavel(), $variavelAtribuida->getIndiceCalculado())
+        );
     }
 
     private static function getComandosAtribuicaoTrue(Atribuicao $atribuicao, ControladorFuncoes $controladorFuncoes) : array
     {
-        
+        return [];
     }
 
     private static function getComandosAtribuicaoFalse(Atribuicao $atribuicao, ControladorFuncoes $controladorFuncoes) : array
     {
-        
+        return [];
     }
 
     private static function getComandosAtribuicaoOperacaoAritimetica(Atribuicao $atribuicao, ControladorFuncoes $controladorFuncoes) : array
     {
-        
+        return [];
     }
 
     private static function getComandosAtribuicaoComparacaoQuantitativa(Atribuicao $atribuicao, ControladorFuncoes $controladorFuncoes) : array
     {
-        
+        return [];
     }
 
     private static function getComandosAtribuicaoComparacaoIgualdade(Atribuicao $atribuicao, ControladorFuncoes $controladorFuncoes) : array
     {
-        
+        return [];
     }
 
     private static function getComandosAtribuicaoOperacaoLogicaAnd(Atribuicao $atribuicao, ControladorFuncoes $controladorFuncoes) : array
     {
-        
+        return [];
     }
 
     private static function getComandosAtribuicaoOperacaoLogicaOr(Atribuicao $atribuicao, ControladorFuncoes $controladorFuncoes) : array
     {
-        
+        return [];
     }
-
 }

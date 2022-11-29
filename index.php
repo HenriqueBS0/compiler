@@ -14,9 +14,12 @@ $parser = new Parser();
 
 $input = "
     EXECUTE() {
-        NUM x;
-        NUM y;
-        NUM z;
+        STR x;
+        STR y;
+
+        x = 'TESTE';
+
+        y = x;
     }
 ";
 

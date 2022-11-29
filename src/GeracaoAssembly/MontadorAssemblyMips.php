@@ -14,14 +14,12 @@ class MontadorAssemblyMips {
         $controlador = self::getControladorFuncoes($programa);
         $controlador->setFuncao('EXECUTE');
 
-        $comandos = array_merge_recursive(
-            ['.data'],
-            MontadorDeclaracaoVariaveis::getComandos($controlador),
-            //['.text'],
-            //MontadorComandos::getComandos($programa, $controlador, $programa->getExecucao()->getBlocoCodigo()->getListaComandos())
+        $comandos = array_merge(
+            ['.data', MontadorDeclaracaoVariaveis::getComandos($controlador)],
+            ['.text', MontadorComandos::getComandos($controlador, $programa->getExecucao()->getBlocoCodigo()->getListaComandos())],
         );
 
-        return implode(PHP_EOL . '     ', $comandos);
+        return implode(PHP_EOL, self::mergeComandos($comandos));
     }
 
     private static function getControladorFuncoes(Programa $programa) : ControladorFuncoes 
@@ -102,5 +100,25 @@ class MontadorAssemblyMips {
         }
 
         return $controlador;
+    }
+
+    private static function mergeComandos(array $comandos, $tabs = 0) : array
+    {
+        $merge = [];
+
+        foreach ($comandos as $comando) {
+            if(is_string($comando)) {
+                $merge[] = str_repeat('    ', $tabs) . $comando;
+                continue;
+            }
+
+            $newTabs = $tabs + 1;
+
+            $subcomandos = self::mergeComandos($comando, $newTabs);
+
+            $merge = array_merge($merge, $subcomandos);
+        }
+
+        return $merge;
     }
 }

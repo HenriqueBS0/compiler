@@ -22,7 +22,7 @@ class MontadorDeclaracaoVariaveis {
 
         $space = $numeroVariaveis * 4;
 
-        return ["   inteiros:" . PHP_EOL . "	.align 2" . PHP_EOL  . "	.space {$space}"];
+        return ['inteiros:', '.align 2', ".space {$space}"];
     }
 
     public static function getDeclaracaoBoleanos(ControladorFuncoes $controladorFuncoes) : array
@@ -35,7 +35,7 @@ class MontadorDeclaracaoVariaveis {
 
         $space = $numeroVariaveis * 4;
 
-        return ["   booleanos:" . PHP_EOL . "	.align 2" . PHP_EOL  . "	.space {$space}"];
+        return ['booleanos:', '.align 2', ".space {$space}"];
     }
 
     public static function getDeclaracaoStrings(ControladorFuncoes $controladorFuncoes) : array
@@ -54,12 +54,12 @@ class MontadorDeclaracaoVariaveis {
 
             $nomeVariavel =  "X{$variavel->getIndice()}"; 
 
-            $comandos[] = " {$nomeVariavel}: .asciiz \"{$variavel->getValor()}\"";
+            $comandos[] = "{$nomeVariavel}: .asciiz \"{$variavel->getValor()}\"";
 
             $variaveisArrayString[] = $nomeVariavel;
         }
 
-        $comandos[] = " cadeias: .word " . implode(', ', $variaveisArrayString);
+        $comandos[] = "cadeias: .word " . implode(', ', $variaveisArrayString);
 
         return $comandos;
     }

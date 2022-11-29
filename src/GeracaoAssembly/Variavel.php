@@ -81,4 +81,22 @@ class Variavel {
 
         return $this;
     }
+
+    public function getIndiceCalculado() : int
+    {
+        return $this->indice * 4;
+    }
+
+    public function getArrayVariavel() : string
+    {
+        if($this->getTipo() === "NUM") {
+            return UtilsMontador::ARRAY_INTEIROS;
+        }
+        if($this->getTipo() === "STR") {
+            return UtilsMontador::ARRAY_CADEIAS;
+        }
+        if($this->getTipo() === "BOOL") {
+            return UtilsMontador::ARRAY_BOOLEANOS;
+        }
+    }
 }
