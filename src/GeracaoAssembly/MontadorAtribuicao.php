@@ -3,6 +3,8 @@
 namespace HenriqueBS0\Compiler\GeracaoAssembly;
 
 use HenriqueBS0\Compiler\EstruturasAnalise\ElementosArvoreSintatica\Atribuicao;
+use HenriqueBS0\Compiler\EstruturasAnalise\ElementosArvoreSintatica\OperadorComparacaoQuantitativa;
+use HenriqueBS0\LexicalAnalyzer\Token;
 
 class MontadorAtribuicao {
     public static function getComandos(Atribuicao $atribuicao, ControladorFuncoes $controladorFuncoes) : array
@@ -29,7 +31,9 @@ class MontadorAtribuicao {
             case !is_null($atribuicao->getOperacaoLogicaAnd()):
                 return self::getComandosAtribuicaoOperacaoLogicaAnd($atribuicao, $controladorFuncoes);
             case !is_null($atribuicao->getOperacaoLogicaOr()):
-                return self::getComandosAtribuicaoOperacaoLogicaOr($atribuicao, $controladorFuncoes);   
+                return self::getComandosAtribuicaoOperacaoLogicaOr($atribuicao, $controladorFuncoes);
+            default :
+                return [];   
         }
     }
 
@@ -39,14 +43,32 @@ class MontadorAtribuicao {
         $variavel = $controladorFuncoes->getVariavel($atribuicao->getIdentificador()->getLexeme());
 
         return array_merge(
-            ["li \$t1, {$atribuicao->getConstante()->getLexeme()}"],
-            UtilsMontador::salvaValorArray($variavel->getArrayVariavel(), $variavel->getIndiceCalculado())
+            UtilsMontador::carregaValorRegistrador($atribuicao->getConstante()->getLexeme()),
+            UtilsMontador::registradorParaArray($variavel->getArrayVariavel(), $variavel->getIndiceCalculado())
         );
     }
 
     private static function getComandosAtribuicaoNot(Atribuicao $atribuicao, ControladorFuncoes $controladorFuncoes) : array
     {
-        return [];
+        $variavel = $controladorFuncoes->getVariavel($atribuicao->getIdentificador()->getLexeme());
+
+        return array_merge(
+            UtilsMontador::arrayParaRegistrador($variavel->getArrayVariavel(), $variavel->getIndiceCalculado()),
+            
+            UtilsMontador::carregaValorRegistrador('1', '$t2'),
+
+            UtilsMontador::desvioCondicional(array_merge(
+                UtilsMontador::carregaValorRegistrador('0', '$t3'),
+                UtilsMontador::registradorParaArray($variavel->getArrayVariavel(), $variavel->getIndice(), '$t3'),
+            ), Subrotinas::getContadorIF()),
+
+            UtilsMontador::carregaValorRegistrador('0', '$t2'),
+
+            UtilsMontador::desvioCondicional(array_merge(
+                UtilsMontador::carregaValorRegistrador('1   ', '$t3'),
+                UtilsMontador::registradorParaArray($variavel->getArrayVariavel(), $variavel->getIndice(), '$t3'),
+            ), Subrotinas::getContadorIF())
+        );
     }
 
     private static function getComandosAtribuicaoVariavel(Atribuicao $atribuicao, ControladorFuncoes $controladorFuncoes) : array
@@ -55,19 +77,28 @@ class MontadorAtribuicao {
         $variavelAtribuir = $controladorFuncoes->getVariavel($atribuicao->getIdentificadorValor()->getLexeme());
 
         return array_merge(
-            UtilsMontador::carregaValorRegistrador($variavelAtribuir->getArrayVariavel(), $variavelAtribuir->getIndiceCalculado()),
-            UtilsMontador::salvaValorArray($variavelAtribuida->getArrayVariavel(), $variavelAtribuida->getIndiceCalculado())
+            UtilsMontador::arrayParaRegistrador($variavelAtribuir->getArrayVariavel(), $variavelAtribuir->getIndiceCalculado()),
+            UtilsMontador::registradorParaArray($variavelAtribuida->getArrayVariavel(), $variavelAtribuida->getIndiceCalculado())
         );
     }
 
     private static function getComandosAtribuicaoTrue(Atribuicao $atribuicao, ControladorFuncoes $controladorFuncoes) : array
     {
-        return [];
+        $variavel = $controladorFuncoes->getVariavel($atribuicao->getIdentificador()->getLexeme());
+        return array_merge(
+            UtilsMontador::carregaValorRegistrador('1'),
+            UtilsMontador::registradorParaArray($variavel->getArrayVariavel(), $variavel->getIndiceCalculado())
+        );
     }
 
     private static function getComandosAtribuicaoFalse(Atribuicao $atribuicao, ControladorFuncoes $controladorFuncoes) : array
     {
-        return [];
+        $variavel = $controladorFuncoes->getVariavel($atribuicao->getIdentificador()->getLexeme());
+
+        return array_merge(
+            UtilsMontador::carregaValorRegistrador('0'),
+            UtilsMontador::registradorParaArray($variavel->getArrayVariavel(), $variavel->getIndiceCalculado())
+        );
     }
 
     private static function getComandosAtribuicaoOperacaoAritimetica(Atribuicao $atribuicao, ControladorFuncoes $controladorFuncoes) : array
@@ -77,7 +108,32 @@ class MontadorAtribuicao {
 
     private static function getComandosAtribuicaoComparacaoQuantitativa(Atribuicao $atribuicao, ControladorFuncoes $controladorFuncoes) : array
     {
-        return [];
+        $primeiroOperando = $atribuicao->getComparacaoQuantitativa()->getSimbolos()[2];
+        $segundoOperando = $atribuicao->getComparacaoQuantitativa()->getSimbolos()[0];
+
+        /** @var OperadorComparacaoQuantitativa */
+        $operador = $atribuicao->getComparacaoQuantitativa()->getSimbolos()[1];
+        
+        $isMaior = $operador->getOperador()->getToken() === 'MAIOR';
+
+        $variavel = $controladorFuncoes->getVariavel($atribuicao->getIdentificador()->getLexeme());
+        
+        return array_merge(
+            self::carregarOperandoRegistrador($primeiroOperando, '$t1', $controladorFuncoes),
+            self::carregarOperandoRegistrador($segundoOperando,  '$t2', $controladorFuncoes),
+
+            UtilsMontador::desvioCondicional(array_merge(
+                UtilsMontador::carregaValorRegistrador('1', '$t3'),
+                UtilsMontador::registradorParaArray($variavel->getArrayVariavel(), $variavel->getIndice(), '$t3'),
+            ), Subrotinas::getContadorIF(), '$t1', '$t2', $isMaior ? UtilsMontador::COMPARACAO_MAIOR : UtilsMontador::COMPARACAO_MENOR),
+
+
+            UtilsMontador::desvioCondicional(array_merge(
+                UtilsMontador::carregaValorRegistrador('0', '$t3'),
+                UtilsMontador::registradorParaArray($variavel->getArrayVariavel(), $variavel->getIndice(), '$t3'),
+            ), Subrotinas::getContadorIF(), '$t1', '$t2', $isMaior ? UtilsMontador::COMPARACAO_MENOR_IGUAL : UtilsMontador::COMPARACAO_MAIOR_IGUAL)
+        );
+
     }
 
     private static function getComandosAtribuicaoComparacaoIgualdade(Atribuicao $atribuicao, ControladorFuncoes $controladorFuncoes) : array
@@ -93,5 +149,16 @@ class MontadorAtribuicao {
     private static function getComandosAtribuicaoOperacaoLogicaOr(Atribuicao $atribuicao, ControladorFuncoes $controladorFuncoes) : array
     {
         return [];
+    }
+
+    private static function carregarOperandoRegistrador(Token $operando, string $registrador, ControladorFuncoes $controladorFuncoes) : array
+    {
+        if($operando->getToken() === 'CONSTANTE') {
+            return UtilsMontador::carregaValorRegistrador($operando->getLexeme(), $registrador);
+        }
+        
+        $variavel = $controladorFuncoes->getVariavel($operando->getLexeme());
+
+        return UtilsMontador::arrayParaRegistrador($variavel->getArrayVariavel(), $variavel->getIndiceCalculado(), $registrador);
     }
 }

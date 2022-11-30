@@ -14,12 +14,14 @@ $parser = new Parser();
 
 $input = "
     EXECUTE() {
-        STR x;
-        STR y;
+        NUM X;
+        NUM Y;
+        BOOL MAIOR;
 
-        x = 'TESTE';
-
-        y = x;
+        X = 4;
+        Y = 3;
+        
+        MAIOR = X > Y;
     }
 ";
 

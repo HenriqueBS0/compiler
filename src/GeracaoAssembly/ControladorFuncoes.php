@@ -9,8 +9,6 @@ class ControladorFuncoes {
     private int $indiceNumeros  = 0;
     private int $indiceCadeias  = 0;
     private int $indiceBoleanos = 0;
-    private int $contadorIF     = 0;
-    private int $contadorWhile  = 0;
 
     private array $funcoes = [];
 
@@ -93,20 +91,6 @@ class ControladorFuncoes {
     public function getVariavel(string $nome) : Variavel
     {
         return $this->getFuncao()->getVariavel($nome);
-    }
-
-    public function getContadorIF() : int
-    {
-        $contador = $this->contadorIF;
-        $this->contadorIF++;
-        return $contador;
-    }
-
-    public function getContadorWhile() : int
-    {
-        $contador = $this->contadorWhile;
-        $this->contadorWhile++;
-        return $contador;
     }
 
     private function getIndiceVariavel(Variavel $variavel) : int

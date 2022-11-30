@@ -19,6 +19,6 @@ class MontadorComandos {
             }
         }
 
-        return $comandos;
+        return array_merge($comandos, UtilsMontador::finaliza());
     }
 }

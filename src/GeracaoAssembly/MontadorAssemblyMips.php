@@ -17,6 +17,7 @@ class MontadorAssemblyMips {
         $comandos = array_merge(
             ['.data', MontadorDeclaracaoVariaveis::getComandos($controlador)],
             ['.text', MontadorComandos::getComandos($controlador, $programa->getExecucao()->getBlocoCodigo()->getListaComandos())],
+            Subrotinas::getSubrotinas()
         );
 
         return implode(PHP_EOL, self::mergeComandos($comandos));
