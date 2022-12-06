@@ -14,7 +14,7 @@ class Automato extends Automaton
 
     private static function getAlfabeto()
     {
-        return array_merge(Builder::getLetters(), Builder::getNumbers(), ['', '<', '>', '(', ')', '{', '}', '-', '+', '*', '\'', '.', ',', ';', '/', '=', '!', '&', '|', ' ', PHP_EOL]);
+        return array_merge(Builder::getLetters(), Builder::getNumbers(), ['', '<', '>', '(', ')', '{', '}', '-', '+', '*', '\'', '.', ',', ';', '/', '=', '!', '&', '|', '\\', ' ', PHP_EOL]);
     }
 
     private static function getEstados()

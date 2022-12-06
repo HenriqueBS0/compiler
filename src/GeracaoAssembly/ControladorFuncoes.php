@@ -79,11 +79,11 @@ class ControladorFuncoes {
         return $variaveisTipo;
     }
 
-    public function addVariavel(Variavel $variavel) : self
+    public function addVariavel(Variavel $variavel, bool $parametro = false) : self
     {
         $variavel->setIndice($this->getIndiceVariavel($variavel));
         
-        $this->getFuncao()->addVariavel($variavel);
+        $this->getFuncao()->addVariavel($variavel, $parametro);
 
         return $this;
     } 

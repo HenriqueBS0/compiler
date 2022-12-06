@@ -16,7 +16,7 @@ class MontadorAssemblyMips {
 
         $comandos = array_merge(
             ['.data', MontadorDeclaracaoVariaveis::getComandos($controlador)],
-            ['.text', MontadorComandos::getComandos($controlador, $programa->getExecucao()->getBlocoCodigo()->getListaComandos())],
+            ['.text', MontadorComandos::getComandos($controlador, $programa->getExecucao()->getBlocoCodigo()->getListaComandos()), ['li $v0, 10', 'syscall']],
             Subrotinas::getSubrotinas()
         );
 
@@ -43,17 +43,20 @@ class MontadorAssemblyMips {
             
             $nomeFuncao = $definicaoFuncao->getIdentificador()->getLexeme();
 
-            $controlador->addFuncao((new Funcao)->setNome($nomeFuncao))->setFuncao($nomeFuncao);
+            $funcao = (new Funcao)->setNome($nomeFuncao);
+            $funcao->listaComandos = $definicaoFuncao->getBlocoCodigo()->getListaComandos();
+
+            $controlador->addFuncao($funcao)->setFuncao($nomeFuncao);
 
             if(!is_null($definicaoFuncao->getDefinicaoParametrosFuncao())) {
 
                 /** @var DefinicaoParametroFuncao */                
-                foreach ($definicaoFuncao->getDefinicaoParametrosFuncao()->getDefinicaoParametrosFuncao() as $definicaoParametro) {
+                foreach (array_reverse($definicaoFuncao->getDefinicaoParametrosFuncao()->getDefinicaoParametrosFuncao()) as $definicaoParametro) {
                     $variavel = (new Variavel())
                         ->setNome($definicaoParametro->getIdentificador()->getLexeme())
                         ->setTipo($definicaoParametro->getTipo()->getLexeme());
 
-                    $controlador->addVariavel($variavel);
+                    $controlador->addVariavel($variavel, true);
                 }
             }
 

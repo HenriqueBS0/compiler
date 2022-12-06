@@ -2,13 +2,22 @@
 
 namespace HenriqueBS0\Compiler\GeracaoAssembly;
 
+use HenriqueBS0\Compiler\EstruturasAnalise\ElementosArvoreSintatica\DefinicaoFuncao;
+use HenriqueBS0\Compiler\EstruturasAnalise\ElementosArvoreSintatica\ListaComandos;
+
 class Funcao {
     private string $nome;
     private array $variaveis = [];
+    private array $parametros = [];
+    public ListaComandos $listaComandos;
 
-    public function addVariavel(Variavel $variavel) : self
+    public function addVariavel(Variavel $variavel, bool $parametro = false) : self
     {
         $this->variaveis[$variavel->getNome()] = $variavel;
+        
+        if($parametro) {
+            $this->parametros[] = $variavel->getNome();
+        }
         
         return $this;
     }
@@ -21,6 +30,11 @@ class Funcao {
     public function getVariaveis() : array
     {
         return $this->variaveis;
+    }
+
+    public function getParametros() : array
+    {
+        return $this->parametros;
     }
 
     /**

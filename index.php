@@ -13,15 +13,25 @@ require_once __DIR__ . '/vendor/autoload.php';
 $parser = new Parser();
 
 $input = "
-    EXECUTE() {
-        NUM X;
-        NUM Y;
-        BOOL MAIOR;
 
-        X = 4;
-        Y = 3;
+    FUNCTION soma(NUM X, NUM Y, NUM R) {
+        R = X + Y;
+    }
+
+    EXECUTE() {        
+        NUM n1;
+        NUM n2;
+        NUM resultado;
+
+        n1 = 1;
+        n2 = 2;
+        resultado = 0;
+
+        soma(n1, n2, resultado);
         
-        MAIOR = X > Y;
+        soma(resultado, resultado, resultado);
+
+        PRINT(resultado);
     }
 ";
 

@@ -44,13 +44,42 @@ class UtilsMontador {
     public static function desvioCondicional(array $comandos, int $contadorIF, string $resgistradorA = '$t1', string $resgistradorB = '$t2', string $comparacao = self::COMPARACAO_IGUAL) : array
     {
         $label = "IF{$contadorIF}";
+        $labelRetorno = "POS{$label}";
 
-        Subrotinas::addSubrotina(["{$label}:", array_merge($comandos, self::finaliza())]);
-        return ["{$comparacao} {$resgistradorA}, $resgistradorB, {$label}"];
+        Subrotinas::addSubrotina(["{$label}:", array_merge($comandos, ["jal {$labelRetorno}"])]);
+        return ["{$comparacao} {$resgistradorA}, $resgistradorB, {$label}", "$labelRetorno:"];
     }
 
-    public static function finaliza() : array 
+    public static function comandoAnd(string $primeiroRegistrador, string $segundoRegistrador, string $registradorResultado) : array
     {
-        return ['li $v0, 10', 'syscall'];
+        return ["AND {$registradorResultado}, {$primeiroRegistrador}, {$segundoRegistrador}"];
+    }
+
+    public static function comandoOR(string $primeiroRegistrador, string $segundoRegistrador, string $registradorResultado) : array
+    {
+        return ["OR {$registradorResultado}, {$primeiroRegistrador}, {$segundoRegistrador}"];
+    }
+
+    public static function soma(string $primeiroRegistrador, string $segundoRegistrador, string $registradorResultado) : array
+    {
+        return ["add {$registradorResultado}, {$primeiroRegistrador}, {$segundoRegistrador}"];
+    }
+
+    public static function subtrai(string $primeiroRegistrador, string $segundoRegistrador, string $registradorResultado) : array
+    {
+        return ["sub {$registradorResultado}, {$primeiroRegistrador}, {$segundoRegistrador}"];
+    }
+
+    public static function multiplica(string $primeiroRegistrador, string $segundoRegistrador, string $registradorResultado) : array
+    {
+        return ["mul {$registradorResultado}, {$primeiroRegistrador}, {$segundoRegistrador}"];
+    }
+
+    public static function divide(string $primeiroRegistrador, string $segundoRegistrador, string $registradorResultado) : array
+    {
+        return [
+            "div {$primeiroRegistrador}, {$segundoRegistrador}",
+            "mflo {$registradorResultado}"
+        ];
     }
 }
