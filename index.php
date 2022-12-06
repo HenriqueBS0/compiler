@@ -13,25 +13,22 @@ require_once __DIR__ . '/vendor/autoload.php';
 $parser = new Parser();
 
 $input = "
+    FUNCTION maiorIdade(NUM idade) {
+        STR MSG1;
+        MSG1 = 'MAIOR DE IDADE.\\n';
 
-    FUNCTION soma(NUM X, NUM Y, NUM R) {
-        R = X + Y;
+        BOOL isMaior;
+        isMaior = idade > 17;
+
+        IF(isMaior) {
+            PRINT(MSG1);
+        }
     }
 
     EXECUTE() {        
-        NUM n1;
-        NUM n2;
-        NUM resultado;
-
-        n1 = 1;
-        n2 = 2;
-        resultado = 0;
-
-        soma(n1, n2, resultado);
-        
-        soma(resultado, resultado, resultado);
-
-        PRINT(resultado);
+        NUM idade;
+        idade = 18;
+        maiorIdade(idade);
     }
 ";
 
